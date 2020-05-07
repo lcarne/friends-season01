@@ -67,7 +67,7 @@ for (i in unlist(friends %>% group_by(episode) %>% distinct(episode))) {
 template <- ""
 attach(content)
 for (i in character) {
-  current_template <- div(class="col-sm-4 col-xs-6", img(src=paste0("./img/", str_to_lower(i), ".jpg"), alt=i), div(class="carousel-caption", h1(class="white", i)))
+  current_template <- div(class="col-sm-4 col-xs-6", img(src=paste0("./docs/img/", str_to_lower(i), ".jpg"), alt=i), div(class="carousel-caption", h1(class="white", i)))
   for (j in unlist(friends %>% distinct(episode))) {
     current_episode <- str_sub(j, -2)
     current_template <- paste0(current_template, 
