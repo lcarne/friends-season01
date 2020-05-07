@@ -412,7 +412,7 @@ for (i in unlist(friends %&gt;% group_by(episode) %&gt;% distinct(episode))) {
 template &lt;- &quot;&quot;
 attach(content)
 for (i in character) {
-  current_template &lt;- div(class=&quot;col-sm-4 col-xs-6&quot;, img(src=paste0(&quot;./docs/img/&quot;, str_to_lower(i), &quot;.jpg&quot;), alt=i), div(class=&quot;carousel-caption&quot;, h1(class=&quot;white&quot;, i)))
+  current_template &lt;- div(class=&quot;col-sm-4 col-xs-6&quot;, img(src=paste0(&quot;./img/&quot;, str_to_lower(i), &quot;.jpg&quot;), alt=i), div(class=&quot;carousel-caption&quot;, h1(class=&quot;white&quot;, i)))
   for (j in unlist(friends %&gt;% distinct(episode))) {
     current_episode &lt;- str_sub(j, -2)
     current_template &lt;- paste0(current_template, 
@@ -454,7 +454,7 @@ $('#carousel-example-generic').carousel({wrap:true});
   </ol>
   <div class="carousel-inner"><div class="item">
   <div class="row"><div class="col-sm-4 col-xs-6">
-  <img src="./docs/img/chandler.jpg" alt="Chandler"/>
+  <img src="./img/chandler.jpg" alt="Chandler"/>
   <div class="carousel-caption">
     <h1 class="white">Chandler</h1>
   </div>
@@ -869,7 +869,7 @@ $('#carousel-example-generic').carousel({wrap:true});
 </div></div>
 </div><div class="item">
   <div class="row"><div class="col-sm-4 col-xs-6">
-  <img src="./docs/img/joey.jpg" alt="Joey"/>
+  <img src="./img/joey.jpg" alt="Joey"/>
   <div class="carousel-caption">
     <h1 class="white">Joey</h1>
   </div>
@@ -1284,7 +1284,7 @@ $('#carousel-example-generic').carousel({wrap:true});
 </div></div>
 </div><div class="item">
   <div class="row"><div class="col-sm-4 col-xs-6">
-  <img src="./docs/img/monica.jpg" alt="Monica"/>
+  <img src="./img/monica.jpg" alt="Monica"/>
   <div class="carousel-caption">
     <h1 class="white">Monica</h1>
   </div>
@@ -1699,7 +1699,7 @@ $('#carousel-example-generic').carousel({wrap:true});
 </div></div>
 </div><div class="item">
   <div class="row"><div class="col-sm-4 col-xs-6">
-  <img src="./docs/img/phoebe.jpg" alt="Phoebe"/>
+  <img src="./img/phoebe.jpg" alt="Phoebe"/>
   <div class="carousel-caption">
     <h1 class="white">Phoebe</h1>
   </div>
@@ -2114,7 +2114,7 @@ $('#carousel-example-generic').carousel({wrap:true});
 </div></div>
 </div><div class="item">
   <div class="row"><div class="col-sm-4 col-xs-6">
-  <img src="./docs/img/rachel.jpg" alt="Rachel"/>
+  <img src="./img/rachel.jpg" alt="Rachel"/>
   <div class="carousel-caption">
     <h1 class="white">Rachel</h1>
   </div>
@@ -2529,7 +2529,7 @@ $('#carousel-example-generic').carousel({wrap:true});
 </div></div>
 </div><div class="item active">
   <div class="row"><div class="col-sm-4 col-xs-6">
-  <img src="./docs/img/ross.jpg" alt="Ross"/>
+  <img src="./img/ross.jpg" alt="Ross"/>
   <div class="carousel-caption">
     <h1 class="white">Ross</h1>
   </div>
