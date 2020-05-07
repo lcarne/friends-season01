@@ -1,0 +1,108 @@
+---
+title: "Friends first season analysis"
+author: "Léo CARNÉ, Ophélie KORSIA & STEVEN Vincent"
+output: 
+      html_document:
+            css: ./docs/src/friends-saison01.css
+            theme: cerulean
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+packages <- c("tidyverse", "rvest", "shiny", "tidytext")
+
+newPackages <- packages[!(packages %in% installed.packages()[,"Package"])]
+if(length(newPackages)) install.packages(newPackages)
+lapply(packages, library, character.only = TRUE)
+remove(packages, newPackages)
+```
+
+![](./docs/img/friends-logo.png)
+
+## Friends dataset creation
+
+Returns all the sentences said by the characters by episodes.
+
+```{r friends_dataset}
+t_files <-  tibble(files = list.files(path = "./docs/data/S01", recursive = TRUE))
+friends <- tibble(episode = character(), character = character(), sentence = character(), comment = character())
+
+for (i in 1:nrow(t_files)) {
+  current_episode <- read_html(x = paste("./docs/data/S01", as.character(t_files[i, 1]), sep = "/"), encoding = "UTF-8")
+  
+  current_friends <- tibble(extracted = current_episode %>% html_nodes(css = "p") %>% html_text()) %>%
+    filter(grepl(":", extracted) & !grepl("\\[", extracted) & !grepl("Written by:", extracted))
+  current_friends <- current_friends %>% add_column(episode = str_sub(t_files[i, 1], 1,-6), 
+                                                    character = gsub("\\:(.*)", "", current_friends$extracted), 
+                                                    sentence = gsub("(?:.*)(?:\\)\ )|(?:.*)(?:\\:\ )", "", current_friends$extracted),
+                                                    comment = str_extract(current_friends$extracted, "(?:\\()(?:.*)(?:\\))"))
+  
+  friends <- friends %>% add_row(episode = current_friends$episode, 
+                                 character = current_friends$character, 
+                                 sentence = current_friends$sentence,
+                                 comment = current_friends$comment)
+}
+rm(current_episode, current_friends, i, t_files)
+```
+
+## HTML template creation
+
+Creates the HTML template to be inserted between *indicators.html* and *controls.html*.
+
+```{r contentTemplate friends_dataset}
+n = 6 #number of character we want to show
+content <- tibble(character = unlist(head(friends %>% group_by(character) %>% 
+                                            count(character, sort = TRUE) %>% select(character), n)),
+                  active = c(" active", rep("", n-1)))
+for (i in unlist(friends %>% group_by(episode) %>% distinct(episode))) {
+  content <- merge(x = content, y = friends %>% filter(episode == i) %>% 
+                     group_by(character) %>% summarise(!!paste0("nb_sentences_", i) := n()), by.x = "character", by.y = "character")
+  content <- merge(x = content, y = friends %>% filter(episode == i) %>% 
+                     unnest_tokens(output = "words", input = sentence, token = "words") %>% 
+                     group_by(character) %>% summarise(!!paste0("nb_words_", i) := n()), by.x = "character", by.y = "character")
+  content[, paste0("ratio_", i)] <- round(content[, paste0("nb_words_", i)]/content[, paste0("nb_sentences_", i)])
+}
+
+template <- ""
+attach(content)
+for (i in character) {
+  current_template <- div(class="col-sm-4 col-xs-6", img(src=paste0("./img/", str_to_lower(i), ".jpg"), alt=i), div(class="carousel-caption", h1(class="white", i)))
+  for (j in unlist(friends %>% distinct(episode))) {
+    current_episode <- str_sub(j, -2)
+    current_template <- paste0(current_template, 
+                               div(class="col-sm-4 col-xs-6",
+                                   h4("Episode number", current_episode),
+                                   p("Number of words:",
+                                     content[character == i, paste0("nb_words_01", current_episode)]),
+                                   p("Number of sentences:",
+                                     content[character == i, paste0("nb_sentences_01", current_episode)]),
+                                   p("Ratio in the episode:",
+                                     content[character == i, paste0("ratio_01", current_episode)])
+                               ))
+  }
+  template <- paste0(template, div(class=paste0("item", content[character == i, "active"]), div(class="row", HTML(current_template))))
+}
+detach(content)
+rm(content, current_episode, current_template, i, j)
+```
+
+---
+
+## First season statistics
+
+```{r, echo=FALSE}
+h3(n, "main fictional characters")
+```
+
+<br>
+
+```{js, echo=FALSE}
+$('#carousel-example-generic').carousel({wrap:true});
+```
+
+```{r carousel, echo=FALSE}
+htmlTemplate(filename = "./docs/src/indicators.html")
+HTML(unlist(template))
+htmlTemplate(filename = "./docs/src/controls.html")
+```

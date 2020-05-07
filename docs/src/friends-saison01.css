@@ -1,0 +1,18 @@
+.carousel.slide img {
+    height: 180px;
+    width:auto;
+}
+
+.carousel-caption {
+    position: absolute;
+    bottom:-30px
+ }
+
+ .white {
+    color:whitesmoke;
+ }
+
+ h3 {
+    text-align: center;
+    border: thick double #32a1ce;
+  }
